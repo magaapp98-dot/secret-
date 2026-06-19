@@ -1,1 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретный Сейф</title>
+    <style>
+        /* Черно-белый стиль */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
+        .container {
+            text-align: center;
+            background: #1e1e1e;
+            padding: 40px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        /* Иконка сейфа */
+        .safe-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            transition: transform 0.5s ease;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Поля ввода и кнопка */
+        input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ffffff;
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 25px;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #cccccc;
+        }
+
+        /* Скрытое сообщение */
+        .secret-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #ffffff;
+            background: #2a2a2a;
+        }
+
+        .error-message {
+            color: #ff5555;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="safe" class="safe-icon">🔒</div>
+    <h1 id="title">ВВЕДИТЕ КОД ДОСТУПА</h1>
+    
+    <div id="auth-form">
+        <input type="password" id="password" placeholder="••••••••••••">
+        <br>
+        <button onclick="checkPassword()">ОТКРЫТЬ</button>
+        <div id="error" class="error-message">НЕВЕРНЫЙ КОД ДОСТУПА</div>
+    </div>
+
+    <div id="secret" class="secret-message">
+        <h3>ДОСТУП РАЗРЕШЕН</h3>
+        <p>Привет! Это твое секретное сообщение, которое ты оставил в сейфе. Сюда можно вписать любой текст.</p>
+    </div>
+</div>
+
+<script>
+    function checkPassword() {
+        const input = document.getElementById('password').value;
+        const safe = document.getElementById('safe');
+        const secret = document.getElementById('secret');
+        const error = document.getElementById('error');
+        const form = document.getElementById('auth-form');
+        const title = document.getElementById('title');
+
+        // Твой правильный пароль
+        const correctPassword = "X7#qM2@vL9!rT4$";
+
+        if (input === correctPassword) {
+            error.style.display = 'none';
+            safe.innerHTML = "🔓"; // Меняем замок на открытый
+            form.style.display = 'none'; // Прячем форму ввода
+            title.innerText = "СЕЙФ ОТКРЫТ";
+            secret.style.display = 'block'; // Показываем сообщение
+        } else {
+            error.style.display = 'block';
+            safe.classList.add('shake'); // Эффект тряски при ошибке
+            setTimeout(() => safe.classList.remove('shake'), 500);
+        }
+    }
+</script>
+
+</body>
+</html>
