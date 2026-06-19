@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Секретный Сейф</title>
     <style>
-        /* Черно-белый стиль */
+        /* Реалистичный фон с текстурой темного металла */
         body {
-            background-color: #121212;
+            background-color: #1a1a1a;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80'); /* Металлическая/технологичная текстура */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -18,27 +24,32 @@
             overflow: hidden;
         }
 
+        /* Контейнер в виде стальной панели сейфа */
         .container {
             text-align: center;
-            background: #1e1e1e;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
             padding: 40px;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border: 4px solid #444444;
+            border-top-color: #666666;
+            border-left-color: #555555;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0,0,0,0.6);
+            border-radius: 12px;
             max-width: 400px;
             width: 100%;
+            position: relative;
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 20px;
             letter-spacing: 2px;
+            text-shadow: 1px 1px 2px #000;
         }
 
-        /* Иконка сейфа */
         .safe-icon {
             font-size: 80px;
             margin-bottom: 20px;
+            filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.5));
             transition: transform 0.5s ease;
         }
 
@@ -54,48 +65,85 @@
             100% { transform: translateX(0); }
         }
 
-        /* Поля ввода и кнопка */
-        input[type="password"] {
-            width: 80%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ffffff;
-            background: #000000;
-            color: #ffffff;
+        /* Блок ввода с кнопкой показа пароля */
+        .input-wrapper {
+            position: relative;
+            width: 85%;
+            margin: 0 auto 15px auto;
+        }
+
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            border: 2px solid #333333;
+            background: #0a0a0a;
+            color: #00ff00; /* Зеленый цвет кода для лучшей видимости */
+            font-family: monospace;
             text-align: center;
             font-size: 16px;
             outline: none;
+            box-sizing: border-box;
+            border-radius: 4px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
         }
 
-        button {
-            padding: 10px 25px;
-            background: #ffffff;
+        /* Иконка глаза */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+
+        button.btn-open {
+            padding: 12px 30px;
+            background: linear-gradient(#ffffff, #cccccc);
             color: #000000;
-            border: none;
+            border: 1px solid #999999;
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
-            transition: 0.3s;
+            transition: 0.2s;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        button:hover {
-            background: #cccccc;
+        button.btn-open:hover {
+            background: linear-gradient(#eeeeee, #aaaaaa);
         }
 
-        /* Скрытое сообщение */
+        /* Секретное сообщение */
         .secret-message {
             display: none;
             margin-top: 20px;
-            padding: 15px;
-            border: 1px dashed #ffffff;
-            background: #2a2a2a;
+            padding: 20px;
+            border: 2px dashed #555555;
+            background: #111111;
+            border-radius: 6px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .secret-message h3 {
+            color: #ff5555;
+            margin-top: 0;
+            letter-spacing: 1px;
         }
 
         .error-message {
-            color: #ff5555;
+            color: #ff3333;
             margin-top: 10px;
             font-size: 14px;
             display: none;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -106,19 +154,38 @@
     <h1 id="title">ВВЕДИТЕ КОД ДОСТУПА</h1>
     
     <div id="auth-form">
-        <input type="password" id="password" placeholder="••••••••••••">
-        <br>
-        <button onclick="checkPassword()">ОТКРЫТЬ</button>
-        <div id="error" class="error-message">НЕВЕРНЫЙ КОД ДОСТУПА</div>
+        <div class="input-wrapper">
+            <input type="password" id="password" placeholder="КОД ДОСТУПА">
+            <span id="toggleBtn" class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+        </div>
+        <button class="btn-open" onclick="checkPassword()">ОТКРЫТЬ СЕЙФ</button>
+        <div id="error" class="error-message">НЕВЕРНЫЙ КОД</div>
     </div>
 
     <div id="secret" class="secret-message">
         <h3>ДОСТУП РАЗРЕШЕН</h3>
-        <p>Привет! Это твое секретное сообщение, которое ты оставил в сейфе. Сюда можно вписать любой текст.</p>
+        <p>упс, кажется тут ничего нет</p>
     </div>
 </div>
 
+<audio id="open-sound" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
+<audio id="bg-music" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto" loop></audio>
+
 <script>
+    // Функция показа/скрытия написанного кода
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.innerText = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.innerText = '👁️';
+        }
+    }
+
     function checkPassword() {
         const input = document.getElementById('password').value;
         const safe = document.getElementById('safe');
@@ -126,19 +193,24 @@
         const error = document.getElementById('error');
         const form = document.getElementById('auth-form');
         const title = document.getElementById('title');
+        
+        const openSound = document.getElementById('open-sound');
+        const bgMusic = document.getElementById('bg-music');
 
-        // Твой правильный пароль
         const correctPassword = "X7#qM2@vL9!rT4$";
 
         if (input === correctPassword) {
             error.style.display = 'none';
-            safe.innerHTML = "🔓"; // Меняем замок на открытый
-            form.style.display = 'none'; // Прячем форму ввода
+            safe.innerHTML = "🔓"; 
+            form.style.display = 'none'; 
             title.innerText = "СЕЙФ ОТКРЫТ";
-            secret.style.display = 'block'; // Показываем сообщение
+            secret.style.display = 'block'; 
+
+            openSound.play().catch(e => console.log("Ошибка звука:", e));
+            bgMusic.play().catch(e => console.log("Ошибка музыки:", e));
         } else {
             error.style.display = 'block';
-            safe.classList.add('shake'); // Эффект тряски при ошибке
+            safe.classList.add('shake'); 
             setTimeout(() => safe.classList.remove('shake'), 500);
         }
     }
@@ -146,3 +218,4 @@
 
 </body>
 </html>
+       
